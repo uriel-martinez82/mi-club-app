@@ -1,4 +1,4 @@
-export type Rol = 'socio' | 'responsable_disciplina' | 'administrativo' | 'dirigente'
+export type Rol = 'socio' | 'responsable_disciplina' | 'administrativo' | 'dirigente' | 'superadmin'
 
 export type PlanClub = 'free' | 'basic' | 'pro'
 

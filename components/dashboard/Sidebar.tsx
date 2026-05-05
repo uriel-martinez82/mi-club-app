@@ -43,8 +43,16 @@ const navDirigente = [
   { href: '/dashboard/configuracion', label: 'Configuración', icon: '⚙️' },
 ]
 
+const navSuperAdmin = [
+  { href: '/dashboard', label: 'Inicio', icon: '🏠' },
+  { href: '/dashboard/clubes', label: 'Clubes', icon: '🏟️' },
+  { href: '/dashboard/clubes/nuevo', label: 'Nuevo club', icon: '➕' },
+  { href: '/dashboard/usuarios', label: 'Usuarios', icon: '👥' },
+]
+
 function getNav(rol: string) {
   switch (rol) {
+    case 'superadmin': return navSuperAdmin
     case 'dirigente': return navDirigente
     case 'administrativo': return navAdmin
     case 'responsable_disciplina': return navResponsable
