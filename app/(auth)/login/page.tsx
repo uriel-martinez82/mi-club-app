@@ -14,20 +14,19 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
 
   const handleLogin = async () => {
-    setLoading(true)
-    setError(null)
+  setLoading(true)
+  setError(null)
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+  const { error } = await supabase.auth.signInWithPassword({ email, password })
 
-    if (error) {
-      setError('Email o contraseña incorrectos')
-      setLoading(false)
-      return
-    }
-
-    router.push('/dashboard')
-    router.refresh()
+  if (error) {
+    setError('Email o contraseña incorrectos')
+    setLoading(false)
+    return
   }
+
+  window.location.href = '/dashboard'
+}
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
