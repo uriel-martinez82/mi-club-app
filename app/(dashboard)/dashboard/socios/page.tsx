@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 
 export default async function SociosPage() {
   const supabase = await createClient()
@@ -13,20 +14,25 @@ export default async function SociosPage() {
     .eq('id', user.id)
     .single()
 
-  if (!perfil || !['administrativo', 'dirigente'].includes(perfil.rol)) {
+  if (!perfil || !['administrativo', 'dirigente', 'superadmin'].includes(perfil.rol)) {
     redirect('/dashboard')
   }
 
-  const { data: socios } = await supabase
-    .from('socios')
-    .select('*, users(nombre, apellido, email, phone)')
-    .eq('club_id', perfil.club_id)
-    .order('created_at', { ascending: false })
+    const sociosQuery = supabase
+        .from('socios')
+        .select('*, users(nombre, apellido, email, phone), clubs(nombre)')
+        .order('created_at', { ascending: false })
 
-  const total = socios?.length ?? 0
-  const activos = socios?.filter(s => s.estado === 'activo').length ?? 0
-  const inactivos = socios?.filter(s => s.estado === 'inactivo').length ?? 0
-  const pendientes = socios?.filter(s => s.estado === 'pendiente').length ?? 0
+    if (perfil.rol !== 'superadmin') {
+        sociosQuery.eq('club_id', perfil.club_id)
+    }
+
+    const { data: socios } = await sociosQuery
+
+    const total = socios?.length ?? 0
+    const activos = socios?.filter(s => s.estado === 'activo').length ?? 0
+    const inactivos = socios?.filter(s => s.estado === 'inactivo').length ?? 0
+    const pendientes = socios?.filter(s => s.estado === 'pendiente').length ?? 0
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -123,9 +129,9 @@ export default async function SociosPage() {
                     {new Date(socio.fecha_alta).toLocaleDateString('es-AR')}
                   </td>
                   <td className="px-5 py-4">
-                    <button className="text-xs text-blue-600 hover:underline font-medium">
-                      Ver detalle
-                    </button>
+                    <Link href={`/dashboard/socios/${socio.id}`} className="text-xs text-blue-600 hover:underline font-medium">
+                        Ver detalle
+                    </Link>
                   </td>
                 </tr>
               ))}
